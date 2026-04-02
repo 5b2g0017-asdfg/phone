@@ -9,8 +9,6 @@
         :root {
             --rimuru-blue: #a0d8ef;
             --deep-space: #0a0f1d;
-            --box-gap: 20px;
-            --text-gap: 8px;
             --success-green: #2ecc71;
             --error-red: #ff4757;
         }
@@ -164,25 +162,21 @@
 
         .detail-content-scroll { overflow-y: auto; margin-top: 20px; }
 
-        /* --- 關閉按鈕：紅色旋轉特效 --- */
         .close-btn {
             position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 1.5rem; z-index: 1000;
-            /* 讓 transition 稍快一點以配合按下的節奏 */
             transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
         }
 
         .close-btn:active {
             background-color: var(--error-red) !important;
             border-color: var(--error-red) !important;
-            transform: rotate(180deg) scale(1.2); /* 旋轉角度加大增加動感 */
+            transform: rotate(180deg) scale(1.2);
             box-shadow: 0 0 25px var(--error-red);
-            color: #fff;
         }
 
-        /* --- 列表與複製 --- */
         table { width: 100%; border-spacing: 0 12px; }
         .clickable-td {
             padding: 20px; background: rgba(255, 255, 255, 0.05);
@@ -206,7 +200,7 @@
         </section>
 
         <section id="menu-grid" class="page-section">
-            <button class="close-btn" onclick="delayedSwitch('init-page')">×</button>
+            <button class="close-btn" onclick="delayedBack()">×</button>
             <div class="menu-box" onclick="openDetail('status-win', '《作品展示》')">
                 <div class="box-icon"><img src="https://media1.tenor.com/m/Y1PtqpWHKzMAAAAC/maria-mikhailovna-kujou-alya-sometimes-hides-her-feelings-in-russian.gif"></div>
                 <div class="text-content"><div class="tag">PORTFOLIO</div><h3>作品集</h3></div>
@@ -226,7 +220,7 @@
         </section>
 
         <section id="detail-section" class="page-section">
-            <button class="close-btn" onclick="delayedSwitch('menu-grid')">×</button>
+            <button class="close-btn" onclick="delayedBack()">×</button>
             <div class="detail-page">
                 <h2 id="detail-title" style="color:var(--rimuru-blue); border-bottom:1px solid; padding-bottom:10px; letter-spacing: 2px; font-size: 1.4rem;"></h2>
                 <div id="detail-content" class="detail-content-scroll simple-text"></div>
@@ -254,7 +248,7 @@
     <template id="tpl-memo-win"><div class="simple-text" style="text-align:center;">Coming soon...</div></template>
 
     <script>
-        // 背景動畫 (維持)
+        // --- 背景動畫 (維持) ---
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -276,29 +270,56 @@
         }
         animate();
 
-        // 核心修正：延遲切換函數
+        // --- 核心導覽邏輯修正 ---
+
+        // 用於手動按鈕的延遲（為了看紅色特效）
         function delayedSwitch(pageId) {
-            // 給予 200 毫秒時間讓 CSS 的 :active 特效（紅色旋轉）跑完
-            setTimeout(() => {
-                switchPage(pageId);
-            }, 200);
+            setTimeout(() => { switchPage(pageId); }, 200);
         }
 
-        function switchPage(pageId, isBack = false) {
+        // 專門處理按關閉鈕的動作：直接模擬手機返回鍵
+        function delayedBack() {
+            setTimeout(() => { history.back(); }, 200);
+        }
+
+        function switchPage(pageId, isPopState = false) {
             const allPages = document.querySelectorAll('.page-section');
             const target = document.getElementById(pageId);
+
+            // 隱藏所有頁面
             allPages.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-            if (!isBack) history.pushState({ page: pageId }, '', '');
+
+            // 如果不是由返回鍵觸發的換頁，才需要處理 history
+            if (!isPopState) {
+                if (pageId === 'menu-grid') {
+                    // 進入選單時，使用 replaceState 覆蓋啟動頁面的紀錄
+                    // 這樣選單就變成了歷史紀錄的「第一層」
+                    history.pushState({ page: 'menu-grid' }, '', '');
+                } else if (pageId === 'detail-section') {
+                    // 進入內容時，正常推進 stack
+                    history.pushState({ page: 'detail-section' }, '', '');
+                }
+            }
+
+            // 顯示目標頁面
             target.style.display = (pageId === 'menu-grid') ? 'grid' : 'flex';
             setTimeout(() => { target.classList.add('active'); }, 50);
             window.scrollTo({ top: 0 });
         }
 
+        // 監聽手機返回鍵
         window.addEventListener('popstate', (e) => {
-            const page = (e.state && e.state.page) ? e.state.page : 'init-page';
-            switchPage(page, true);
+            if (e.state && e.state.page) {
+                // 如果有紀錄，跳轉到該頁面
+                switchPage(e.state.page, true);
+            } else {
+                // 如果回到最初始（紀錄清空），顯示啟動頁面
+                switchPage('init-page', true);
+            }
         });
-        history.replaceState({ page: 'init-page' }, '', '');
+
+        // 初始化：不要主動寫入 history，讓 init-page 成為「沒有紀錄」的狀態
+        // 這樣在啟動頁按返回鍵就會直接退回 Google 或上一頁
 
         function openDetail(dataId, titleText) {
             const contentArea = document.getElementById('detail-content');
