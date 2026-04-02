@@ -26,44 +26,40 @@
 
         #bg-canvas {
             position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
+            top: 0; left: 0; width: 100%; height: 100%;
             z-index: -1;
             background: radial-gradient(circle at 50% 50%, #1a2a4a 0%, #0a0f1d 100%);
         }
 
         @keyframes initShow {
-            0% { opacity: 0; transform: scale(1.1); filter: blur(10px); }
+            0% { opacity: 0; transform: scale(1.05); filter: blur(10px); }
             100% { opacity: 1; transform: scale(1); filter: blur(0); }
         }
 
         .wrapper {
             position: relative;
             width: 100%;
+            max-width: 500px;
+            margin: 0 auto;
             min-height: 100vh;
             display: flex;
             flex-direction: column;
             align-items: center;
             z-index: 1;
-            animation: initShow 1.5s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
+            animation: initShow 1.2s cubic-bezier(0.165, 0.84, 0.44, 1) forwards;
         }
 
         .page-section {
             display: none;
             opacity: 0;
-            transform: scale(0.95);
-            transition: opacity 0.4s ease, transform 0.4s ease;
             width: 100%;
-            max-width: 600px;
             padding: 20px;
             box-sizing: border-box;
+            transition: opacity 0.4s ease;
         }
 
         .page-section.active {
             opacity: 1;
-            transform: scale(1);
         }
 
         /* --- 啟動頁面 --- */
@@ -75,12 +71,11 @@
         }
 
         .rimuru-core {
-            width: 160px;
-            height: 130px;
+            width: 140px; height: 110px;
             background: linear-gradient(135deg, #a0d8ef 0%, #3498db 100%);
             border-radius: 50% 50% 45% 45% / 65% 65% 35% 35%;
             margin-bottom: 30px;
-            box-shadow: 0 0 50px var(--rimuru-blue);
+            box-shadow: 0 0 40px var(--rimuru-blue);
             animation: slimeFloat 4s infinite ease-in-out;
         }
 
@@ -90,29 +85,19 @@
         }
 
         .btn-main {
-            background: transparent;
-            border: 2px solid var(--rimuru-blue);
-            color: var(--rimuru-blue);
-            padding: 18px 50px;
-            font-weight: bold;
-            cursor: pointer;
-            border-radius: 50px;
-            letter-spacing: 3px;
-            transition: all 0.3s ease;
+            background: transparent; border: 2px solid var(--rimuru-blue);
+            color: var(--rimuru-blue); padding: 15px 45px;
+            font-weight: bold; cursor: pointer; border-radius: 50px;
+            letter-spacing: 3px; font-family: inherit;
         }
 
-        .btn-main:active {
-            background-color: var(--rimuru-blue);
-            color: var(--deep-space);
-            transform: scale(0.9);
-        }
-
-        /* --- 選單頁面 --- */
+        /* --- 四方塊選單 --- */
         #menu-grid {
             padding-top: 80px;
-            display: none; 
+            display: none;
             grid-template-columns: repeat(2, 1fr);
             gap: 15px;
+            width: 100%;
         }
 
         .menu-box {
@@ -120,72 +105,73 @@
             border: 1px solid rgba(160, 216, 239, 0.3);
             border-radius: 20px;
             backdrop-filter: blur(8px);
-            display: flex;
-            flex-direction: column;
-            justify-content: center;
-            align-items: center;
-            padding: 25px 10px;
-            gap: 15px;
-            transition: all 0.3s ease;
+            display: flex; flex-direction: column;
+            justify-content: center; align-items: center;
+            padding: 20px 10px;
+            gap: 12px;
+            transition: transform 0.2s ease, background 0.2s ease;
+            aspect-ratio: 1 / 1.1;
         }
 
-        .menu-box:active {
-            background: rgba(160, 216, 239, 0.25);
-            transform: scale(0.95);
-        }
+        .menu-box:active { background: rgba(160, 216, 239, 0.25); transform: scale(0.95); }
 
+        .box-icon { width: 100%; display: flex; justify-content: center; overflow: hidden; }
         .box-icon img {
-            max-width: 90%;
-            max-height: 100px;
-            border-radius: 15px;
-            filter: drop-shadow(0 0 5px rgba(160, 216, 239, 0.5));
+            width: 80%;
+            height: auto;
+            border-radius: 12px;
+            filter: drop-shadow(0 0 5px rgba(160, 216, 239, 0.4));
         }
 
-        .tag { font-size: 0.75rem; color: var(--rimuru-blue); opacity: 0.9; letter-spacing: 2px; }
-        h3 { font-size: 1.2rem; margin: 0; letter-spacing: 2px; }
+        /* 文字置中關鍵修正 */
+        .text-content {
+            width: 100%;
+            text-align: center;
+        }
 
-        /* --- 詳細內容區 --- */
-        #detail-section { padding-top: 80px; flex-direction: column; }
+        .tag { font-size: 0.7rem; color: var(--rimuru-blue); opacity: 0.8; letter-spacing: 1.5px; }
+        h3 { font-size: 1.1rem; margin: 0; letter-spacing: 1px; }
+
+        /* --- 內容區頁面 --- */
+        #detail-section { padding-top: 80px; flex-direction: column; align-items: center; }
+        
         .detail-page {
-            width: 95%;
-            max-height: 75vh;
+            width: calc(100% - 10px);
+            max-height: 70vh;
             background: rgba(15, 23, 42, 0.95);
             border: 1px solid var(--rimuru-blue);
-            border-radius: 25px;
-            padding: 30px 20px;
+            border-radius: 20px;
+            padding: 25px;
             box-sizing: border-box;
             backdrop-filter: blur(20px);
-            display: flex;
-            flex-direction: column;
-            box-shadow: 0 0 30px rgba(160, 216, 239, 0.3);
+            display: flex; flex-direction: column;
+            box-shadow: 0 0 30px rgba(160, 216, 239, 0.2);
         }
 
-        .detail-content-scroll { overflow-y: auto; margin-top: 20px; }
+        .detail-content-scroll { overflow-y: auto; margin-top: 15px; width: 100%; }
 
         .close-btn {
             position: fixed; top: 20px; right: 20px; width: 45px; height: 45px;
             background: rgba(255, 255, 255, 0.1); border: 1px solid rgba(255, 255, 255, 0.2);
             color: #fff; border-radius: 50%; display: flex; justify-content: center; align-items: center;
             font-size: 1.5rem; z-index: 1000;
-            transition: all 0.2s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            transition: all 0.2s ease;
         }
 
         .close-btn:active {
-            background-color: var(--error-red) !important;
-            border-color: var(--error-red) !important;
-            transform: rotate(180deg) scale(1.2);
-            box-shadow: 0 0 25px var(--error-red);
+            background-color: var(--error-red); border-color: var(--error-red);
+            transform: rotate(180deg) scale(1.1); box-shadow: 0 0 20px var(--error-red);
         }
 
-        table { width: 100%; border-spacing: 0 12px; }
+        .list-table { width: 100%; border-spacing: 0 10px; }
         .clickable-td {
-            padding: 20px; background: rgba(255, 255, 255, 0.05);
+            padding: 18px; background: rgba(255, 255, 255, 0.05);
             border: 1px solid rgba(160, 216, 239, 0.1); border-radius: 12px;
-            text-align: center; font-weight: bold;
+            text-align: center; font-weight: bold; font-size: 0.95rem;
         }
 
-        .copy-label { transition: all 0.4s ease; display: inline-block; }
-        .simple-text { font-size: 1.1rem; line-height: 1.8; }
+        .copy-label { transition: color 0.4s ease; }
+        .simple-text { font-size: 1rem; line-height: 1.6; }
     </style>
 </head>
 
@@ -195,12 +181,12 @@
     <div class="wrapper">
         <section id="init-page" class="page-section active" style="display: flex;">
             <div class="rimuru-core"></div>
-            <h2 style="letter-spacing: 8px; margin-bottom: 30px; font-size: 1.8rem;">MY WEB</h2>
-            <button class="btn-main" onclick="delayedSwitch('menu-grid')">OPEN</button>
+            <h2 style="letter-spacing: 6px; margin-bottom: 25px; font-size: 1.6rem;">MY WEB</h2>
+            <button class="btn-main" onclick="handleNav('menu-grid')">OPEN</button>
         </section>
 
         <section id="menu-grid" class="page-section">
-            <button class="close-btn" onclick="delayedBack()">×</button>
+            <button class="close-btn" onclick="handleNav('init-page')">×</button>
             <div class="menu-box" onclick="openDetail('status-win', '《作品展示》')">
                 <div class="box-icon"><img src="https://media1.tenor.com/m/Y1PtqpWHKzMAAAAC/maria-mikhailovna-kujou-alya-sometimes-hides-her-feelings-in-russian.gif"></div>
                 <div class="text-content"><div class="tag">PORTFOLIO</div><h3>作品集</h3></div>
@@ -220,16 +206,16 @@
         </section>
 
         <section id="detail-section" class="page-section">
-            <button class="close-btn" onclick="delayedBack()">×</button>
+            <button class="close-btn" onclick="handleNav('menu-grid')">×</button>
             <div class="detail-page">
-                <h2 id="detail-title" style="color:var(--rimuru-blue); border-bottom:1px solid; padding-bottom:10px; letter-spacing: 2px; font-size: 1.4rem;"></h2>
-                <div id="detail-content" class="detail-content-scroll simple-text"></div>
+                <h2 id="detail-title" style="color:var(--rimuru-blue); border-bottom:1px solid rgba(160,216,239,0.3); padding-bottom:10px; margin:0; font-size: 1.2rem;"></h2>
+                <div id="detail-content" class="detail-content-scroll"></div>
             </div>
         </section>
     </div>
 
     <template id="tpl-status-win">
-        <table><tr onclick="window.open('https://5b2g0017-asdfg.github.io/water-puzzle/', '_blank')"><td class="clickable-td"><strong>專案01-水排序</strong></td></tr></table>
+        <table class="list-table"><tr onclick="window.open('https://5b2g0017-asdfg.github.io/water-puzzle/', '_blank')"><td class="clickable-td">專案01-水排序</td></tr></table>
     </template>
     <template id="tpl-nation-win">
         <div class="simple-text">
@@ -239,22 +225,22 @@
         </div>
     </template>
     <template id="tpl-skill-win">
-        <table>
-            <tr onclick="window.open('https://github.com/5b2g0017-asdfg', '_blank')"><td class="clickable-td"><strong>GITHUB</strong></td></tr>
-            <tr onclick="window.open('https://www.instagram.com/xiao.__.chang', '_blank')"><td class="clickable-td"><strong>INSTAGRAM</strong></td></tr>
-            <tr onclick="copyToClipboard('5b2g0017@stust.edu.tw', this)"><td class="clickable-td"><strong class="copy-label">GMAIL(點擊複製)</strong></td></tr>
+        <table class="list-table">
+            <tr onclick="window.open('https://github.com/5b2g0017-asdfg', '_blank')"><td class="clickable-td">GITHUB</td></tr>
+            <tr onclick="window.open('https://www.instagram.com/xiao.__.chang', '_blank')"><td class="clickable-td">INSTAGRAM</td></tr>
+            <tr onclick="copyToClipboard('5b2g0017@stust.edu.tw', this)"><td class="clickable-td"><span class="copy-label">GMAIL(點擊複製)</span></td></tr>
         </table>
     </template>
-    <template id="tpl-memo-win"><div class="simple-text" style="text-align:center;">Coming soon...</div></template>
+    <template id="tpl-memo-win"><div class="simple-text" style="text-align:center; padding:20px;">Coming soon...</div></template>
 
     <script>
-        // --- 背景動畫 (維持) ---
+        // 背景動畫 (維持)
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
         function initCanvas() { canvas.width = window.innerWidth; canvas.height = window.innerHeight; }
         window.onresize = initCanvas; initCanvas();
-        for (let i = 0; i < 40; i++) {
+        for (let i = 0; i < 30; i++) {
             particles.push({ x: Math.random() * canvas.width, y: Math.random() * canvas.height, size: Math.random() * 2 + 1, speedX: Math.random() * 0.4 - 0.2, speedY: Math.random() * 0.4 - 0.2, opacity: Math.random() * 0.5 + 0.2 });
         }
         function animate() {
@@ -270,56 +256,51 @@
         }
         animate();
 
-        // --- 核心導覽邏輯修正 ---
+        // 導覽邏輯
+        let currentPage = 'init-page';
 
-        // 用於手動按鈕的延遲（為了看紅色特效）
-        function delayedSwitch(pageId) {
-            setTimeout(() => { switchPage(pageId); }, 200);
+        function handleNav(targetPage) {
+            setTimeout(() => {
+                currentPage = targetPage;
+                if (targetPage !== 'init-page') {
+                    history.replaceState({ page: targetPage }, '', '');
+                    history.pushState({ page: 'guard' }, '', '');
+                } else {
+                    history.replaceState(null, '', '');
+                }
+                renderPage(targetPage);
+            }, 180);
         }
 
-        // 專門處理按關閉鈕的動作：直接模擬手機返回鍵
-        function delayedBack() {
-            setTimeout(() => { history.back(); }, 200);
-        }
-
-        function switchPage(pageId, isPopState = false) {
+        function renderPage(pageId) {
             const allPages = document.querySelectorAll('.page-section');
             const target = document.getElementById(pageId);
-
-            // 隱藏所有頁面
             allPages.forEach(p => { p.classList.remove('active'); p.style.display = 'none'; });
-
-            // 如果不是由返回鍵觸發的換頁，才需要處理 history
-            if (!isPopState) {
-                if (pageId === 'menu-grid') {
-                    // 進入選單時，使用 replaceState 覆蓋啟動頁面的紀錄
-                    // 這樣選單就變成了歷史紀錄的「第一層」
-                    history.pushState({ page: 'menu-grid' }, '', '');
-                } else if (pageId === 'detail-section') {
-                    // 進入內容時，正常推進 stack
-                    history.pushState({ page: 'detail-section' }, '', '');
-                }
+            
+            if (pageId === 'menu-grid') {
+                target.style.display = 'grid';
+            } else {
+                target.style.display = 'flex';
             }
-
-            // 顯示目標頁面
-            target.style.display = (pageId === 'menu-grid') ? 'grid' : 'flex';
+            
             setTimeout(() => { target.classList.add('active'); }, 50);
             window.scrollTo({ top: 0 });
         }
 
-        // 監聽手機返回鍵
         window.addEventListener('popstate', (e) => {
-            if (e.state && e.state.page) {
-                // 如果有紀錄，跳轉到該頁面
-                switchPage(e.state.page, true);
+            if (currentPage === 'detail-section') {
+                currentPage = 'menu-grid';
+                renderPage('menu-grid');
+                history.replaceState({ page: 'menu-grid' }, '', '');
+                history.pushState({ page: 'guard' }, '', '');
+            } else if (currentPage === 'menu-grid') {
+                currentPage = 'init-page';
+                renderPage('init-page');
+                history.replaceState(null, '', '');
             } else {
-                // 如果回到最初始（紀錄清空），顯示啟動頁面
-                switchPage('init-page', true);
+                history.back();
             }
         });
-
-        // 初始化：不要主動寫入 history，讓 init-page 成為「沒有紀錄」的狀態
-        // 這樣在啟動頁按返回鍵就會直接退回 Google 或上一頁
 
         function openDetail(dataId, titleText) {
             const contentArea = document.getElementById('detail-content');
@@ -327,7 +308,7 @@
             document.getElementById('detail-title').innerText = titleText;
             contentArea.innerHTML = '';
             contentArea.appendChild(template.content.cloneNode(true));
-            switchPage('detail-section');
+            handleNav('detail-section');
         }
 
         function copyToClipboard(text, element) {
@@ -335,7 +316,7 @@
                 const label = element.querySelector('.copy-label');
                 const originalText = label.innerText;
                 label.style.color = "var(--success-green)";
-                label.innerText = "SUCCESS! 已複製到剪貼簿";
+                label.innerText = "SUCCESS! 已複製";
                 setTimeout(() => { label.style.color = ""; label.innerText = originalText; }, 2000);
             });
         }
