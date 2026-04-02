@@ -84,11 +84,26 @@
             50% { transform: translateY(-15px); }
         }
 
+        /* 修正：啟動按鈕特效 */
         .btn-main {
-            background: transparent; border: 2px solid var(--rimuru-blue);
-            color: var(--rimuru-blue); padding: 15px 45px;
-            font-weight: bold; cursor: pointer; border-radius: 50px;
-            letter-spacing: 3px; font-family: inherit;
+            background: transparent; 
+            border: 2px solid var(--rimuru-blue);
+            color: var(--rimuru-blue); 
+            padding: 15px 45px;
+            font-weight: bold; 
+            cursor: pointer; 
+            border-radius: 50px;
+            letter-spacing: 3px; 
+            font-family: inherit;
+            transition: all 0.2s ease;
+            outline: none;
+        }
+
+        .btn-main:active {
+            background-color: var(--rimuru-blue);
+            color: var(--deep-space);
+            transform: scale(0.9);
+            box-shadow: 0 0 20px var(--rimuru-blue);
         }
 
         /* --- 四方塊選單 --- */
@@ -123,12 +138,7 @@
             filter: drop-shadow(0 0 5px rgba(160, 216, 239, 0.4));
         }
 
-        /* 文字置中關鍵修正 */
-        .text-content {
-            width: 100%;
-            text-align: center;
-        }
-
+        .text-content { width: 100%; text-align: center; }
         .tag { font-size: 0.7rem; color: var(--rimuru-blue); opacity: 0.8; letter-spacing: 1.5px; }
         h3 { font-size: 1.1rem; margin: 0; letter-spacing: 1px; }
 
@@ -234,7 +244,6 @@
     <template id="tpl-memo-win"><div class="simple-text" style="text-align:center; padding:20px;">Coming soon...</div></template>
 
     <script>
-        // 背景動畫 (維持)
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         let particles = [];
@@ -256,16 +265,19 @@
         }
         animate();
 
-        // 導覽邏輯
+        // --- 導覽邏輯修正版 ---
         let currentPage = 'init-page';
 
         function handleNav(targetPage) {
+            // 提供視覺特效顯示的時間
             setTimeout(() => {
                 currentPage = targetPage;
                 if (targetPage !== 'init-page') {
+                    // 使用 replaceState + pushState 建立穩定的防護層
                     history.replaceState({ page: targetPage }, '', '');
                     history.pushState({ page: 'guard' }, '', '');
                 } else {
+                    // 回到啟動頁則清空狀態
                     history.replaceState(null, '', '');
                 }
                 renderPage(targetPage);
@@ -287,17 +299,22 @@
             window.scrollTo({ top: 0 });
         }
 
+        // 修正返回鍵連跳問題
         window.addEventListener('popstate', (e) => {
             if (currentPage === 'detail-section') {
+                // 從內容區回選單
                 currentPage = 'menu-grid';
                 renderPage('menu-grid');
+                // 關鍵：重新鋪設選單的歷史紀錄，防止下一次返回直接退出
                 history.replaceState({ page: 'menu-grid' }, '', '');
                 history.pushState({ page: 'guard' }, '', '');
             } else if (currentPage === 'menu-grid') {
+                // 從選單回啟動頁
                 currentPage = 'init-page';
                 renderPage('init-page');
                 history.replaceState(null, '', '');
             } else {
+                // 啟動頁按返回，正常退出
                 history.back();
             }
         });
